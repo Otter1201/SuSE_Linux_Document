@@ -1,0 +1,184 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="zh_TW.UTF-8">
+	<title>Note</title>
+	<link rel="stylesheet" href="defaults.css">
+</head>
+<body>
+
+
+<!-- header -->
+	<h1>Comands</h1>
+	<a href="#list"><li class="title">list</li></a>
+	<br /><a href="#create"><li class="title">create</li></a>
+	<br /><a href="#touch"><li class="title">touch</li></a>
+	<br /><a href="#rename"><li class="title">rename</li></a>
+	<br /><a href="#link"><li class="title">link file</li></a>
+	<br /><a href="#cd"><li class="title">change directory</li></a>
+	<br /><a href="#file"><li class="title">檔案檢視</li></a>
+	<br /><a href="#"><li class="title"></li></a>
+	<br /><a href="#"><li class="title"></li></a>
+	<br /><a href="#"><li class="title"></li></a>
+	<br /><a href="#"><li class="title"></li></a>
+	<br /><a href="#"><li class="title"></li></a>
+	<br /><a href="#"><li class="title"></li></a>
+	<br /><a href="#"><li class="title"></li></a>
+	<br /><a href="#"><li class="title"></li></a>
+<hr />
+
+
+<!-- ls -->
+	<a name="list"><h2>list</h2></a>
+	<p class="h2"></p>
+	<div class="commands">
+		user:~ $ <span class="cmds">ls</span>
+	</div>
+	<p class="h2">arguments:</p>
+	<div class="commands">
+		-a <span class="cmts"># all file(包含隱藏檔)</span>
+		<br />-l <span class="cmts"># 顯示檔案完整訊息</span>
+		<br />-t <span class="cmts"># 依mtime先後順序排列(最後修改時間)</span>
+		<br />-u <span class="cmts"># 依atime排序(最後使用時間)</span>
+		<br />-d <span class="cmts"># 顯示目錄名稱不顯示裡面檔案</span>
+		<br />-i <span class="cmts"># 屬性欄位改列出連結數量</span>
+		<br />-r <span class="cmts"># 反向輸出</span>
+	</div>
+	<div class="commands">
+		user:~ $ <span class="cmds">ls</span> -l
+		<br />xrwxrwxrwx n user group 4096 yyyy-mm-dd hh:mm 
+		<span class="vars">{file name}</span>
+		<br /><sapn class="cmts"># x: file type: l=link file, d=dir. -=file</sapn>
+		<br /><span class="cmts"># rwx: file attribute</span>
+		<br /><span class="cmts"># n: link count, file=hard links, dir=no. files</span>
+		<br /><sapn class="cmts"># 4096: size(byts)</sapn>
+		<br /><span class="cmts">
+			# yyyy-mm-dd hh:mm TimeStamp:
+			<ol>
+				<li>Modified Time, mtime: 最後更動時間</li>
+				<li>Access Time, atime: 檔案被存取(使用)時間</li>
+				<li>Changed Time, ctime: 檔案資訊(權限或擁有者等)變更時間</li>
+			</ol>
+		</span>
+	</div>
+<hr />
+
+
+<!-- create -->
+	<a name="create"><h2>create file</h2></a>
+	<p class="h2"></p>
+	<div class="commands">
+		user:~ $ <span class="cmds">touch</span> 
+		<span class="cmts"># file</span>
+		<br />user:~ $ <span class="cmds">mkdir</span> 
+		<span class="cmts"># directory</span>
+		<br />user:~ $ <span class="cmds">ln</span> 
+		<span class="cmts"># link file</span>
+	</div>
+<hr />
+
+
+<!-- touch -->
+	<a name="touch"><h2>touch</h2></a>
+	<p class="h2"></p>	
+	<div class="commands">
+		user:~ $ <span class="cmds">touch</span>
+		<span class="vars">file name</span>
+	</div>
+	<p class="h2">arguments:</p>
+	<div class="commands">
+		-a <span class="cmts"># change atime</span>
+		<br />-m <span class="cmts"># change mtime</span>
+		<br />-c <span class="cmts"># change ctime, if no such file, no create.</span>
+	</div>
+	<hr />
+	
+	
+	<!-- cp -->
+	<h2>copy</h2>
+	<p class="h2"></p>
+	<div class="commands">
+		user:~ $ <span class="cmds">cp</span> <span class="vars">{file name}</span>
+	</div>
+	<p class="h2">arguments:</p>
+	<div class="commands">
+		-a, --achive <span class="cmts"># 屬性權限等參數皆不改變</span>
+		<br />-i --interactive<span class="cmts"># 寫相同檔名須確認</span>
+	</div>
+<hr />
+
+
+<!-- rename -->
+	<a name="rename"><h2>rename</h2></a>
+	<div class="commands">
+		user:~ $ <span class="cmds">rename</span>
+		<span class="vars">{prev. name}</span>
+		<span class="vars">{changed name}</span>
+		<span class="vars">{changed files}</span>
+	</div>
+	<p class="h2">example:</p>
+	<div class="commands">
+		user:~ $ <span class="cmds">touch</span> 1.a 2.a
+		<br />user:~ $ <span class="cmds">rename</span> .a .b *.a
+		<br />user:~ $ <span class="cmds">ls</span>
+		<br />1.b 2.b
+	</div>
+	<p class="h2">arguments:</p>
+<hr />
+
+
+<!-- ln -->
+	<a name="link"><h2>link file</h2></a>
+	<p class="h2"></p>
+	<div class="commands">
+		user:~ $ <span class="cmds">ln</span>
+		<span class="vars">{path1}</span>
+		<span class="vars">{path2}</span>
+		<span class="cmts"># hard link</span>
+		<br />user:~ $ <span class="cmds">ln</span> -s
+		<span class="vars">{path1}</span>
+		<span class="vars">{path2}</span>
+		<span class="cmts"># soft link</span>
+	</div>
+	<p class="h2">argument:</p>
+	<div class="commands">
+		-s <span class="cmts"># symbol link</span>
+	</div>
+<hr />
+
+
+<!-- cd -->
+	<a name="cd"><h2>change directory</h2></a>
+	<p class="h2"></p>
+	<div class="commands">
+		user:~ $ <span class="cmds">cd</span>
+		<span class="vars">{path}</span>
+		<br />user:~ $ <span class="cmds">pwd</span>
+		<span class="cmts"># 顯示當前目錄下的絕對路徑</span>
+		<br />user:~ $ <span class="cmds">cd -</span>
+		<span class="cmts">#　返回上一個目錄</span>
+		<br /><span class="cmds">cd ~</span>
+		<span class="cmts"># ~=home directory</span>
+	</div>
+<hr />
+
+
+<!-- file -->
+	<a name="file"><h2>檔案檢視</h2></a>
+	<p class="h2"></p>
+	<div class="commands">
+		user:~ $ <span class="cmds">cat</span> -n 
+		<span class="vars">{file name}</span>
+		<span class="cmts"># -n: 顯示行數</span>
+		<br />user:~ $ <span class="cmds">more</span>
+		<span class="vars">{file name}</span>
+		<span class="cmts"># 一次顯示一整個螢幕，按space跳下一頁或q退出</span>
+		<br />user:~ $ <span class="cmds">less</span>
+		<span class="vars">{file name}</span>
+		<span class="cmts"># 與more的差別就是可以任意移動文字檔案內容</span>
+		<br /><span class="cmts"># 檢視二進位檔案</span>
+		<br />user:~ $ <span class="cmds">od</span>
+	</div>	
+<hr />
+</body>
+</html>
