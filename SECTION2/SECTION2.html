@@ -1,0 +1,228 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="zh_TW.UTF-8">
+	<title>SECTION 2:Locate and Use Help Resources</title>
+	<link rel="stylesheet" href="../defaults.css">
+</head>
+<body>
+
+
+<!-- header -->
+	<h1>SECTION 2: Locate and Use Help Resources</h1>
+	<a href="#Object1"><li class="title">Objective 1: Access and Use man Pages</li></a>
+	<br /><a href="#Object2"><li class="title">Objective 2: Use info Pages</li></a>
+	<br /><a href="#Object3"><li class="title">Objective 3: Access release Notes and White Papers</li></a>
+	<br /><a href="#Object4"><li class="title">Objective 4: Use GUI-Based Help</li></a>
+	<br /><a href="#Object5"><li class="title">Objective 5: Find Help on the Web</li></a>
+	<br /><a href="#changrlog"><li class="title">changrlog</li></a>
+	<hr />
+
+
+<!-- Object1 -->
+	<a name="Object1"><h2>Objective 1: Access and Use man Pages</h2></a>
+	<div class="commands">
+		user:~ $ <span class="cmds">man</span>
+		<span class="vars">{command}</span>
+		<span class="cmts"># manual for a command</span>
+	</div>
+
+	<!-- content -->
+		<h3>手冊欄位說明</h3>
+		<table class="h3" border="1">
+			<tr>
+				<th>名稱</th>
+				<th>說明</th>
+			</tr>
+			<tr>
+				<th>NAME</th>
+				<th>指令名稱</th>
+			</tr>
+			<tr>
+				<th>SYNOPSIS</th>
+				<th>摘要: 文件使用方式或指令的基本操作語法</th>
+			</tr>
+			<tr>
+				<th>DESCRIPTION</th>
+				<th>說明: 該指令的完整說明</th>
+			</tr>
+			<tr>
+				<th>OPTION</th>
+				<th>記錄参數的名稱與用法</th>
+			</tr>
+			<tr>
+				<th>COMMANDS</th>
+				<th>程式執行時可用的指令</th>
+			</tr>
+			<tr>
+				<th>FILES</th>
+				<th>與此文件相關的檔案路徑</th>
+			</tr>
+			<tr>
+				<th>SEE ALSO</th>
+				<th>參考資料路徑</th>
+			</tr>
+			<tr>
+				<th>DIAGNOSTICS</th>
+				<th>診斷可能之錯誤訊息</th>
+			</tr>
+			<tr>
+				<th>EXAMPLE</th>
+				<th>語法範例</th>
+			</tr>
+			<tr>
+				<th>BUGS</th>
+				<th>目前存在尚未解決的bug</th>
+			</tr>
+		</table>
+
+	<!-- Ex	 -->
+		<p class="h3">Example:</p>
+		<div class="commands">
+			user:~ $ <span class="cmds">man</span> man
+			<br />Man: find all matching manual pages
+			<br /> * man (1)
+			<br />   man (7)
+			<br />   man (1p)
+			<br />Man: What manual page do you want?
+			<br />Man:
+			<br /><span class="cmts"># man這個指令有1, 7, 1p 三個章節</span>
+		</div>
+	
+	<!-- chap -->
+		<h3>手冊章節說明</h3>
+		<table class="h3" border="1">
+			<tr>
+				<th>章節</th>
+				<th>說明</th>
+			</tr>
+			<tr>
+				<th>0</th>
+				<th>檔頭文件(Header files)</th>
+			</tr>
+			<tr>
+				<th>1</th>
+				<th>使用者指令</th>
+			</tr>
+			<tr>
+				<th>2</th>
+				<th>Linux kernal提供的system call</th>
+			</tr>
+			<tr>
+				<th>3</th>
+				<th>Lib calls</th>
+			</tr>
+			<tr>
+				<th>4</th>
+				<th>裝置檔</th>
+			</tr>
+			<tr>
+				<th>5</th>
+				<th>檔案格式或設定檔案相關語法</th>
+			</tr>
+			<tr>
+				<th>6</th>
+				<th>遊戲軟體</th>
+			</tr>
+			<tr>
+				<th>7</th>
+				<th>雜項</th>
+			</tr>
+			<tr>
+				<th>8</th>
+				<th>管理工具與指令</th>
+			</tr>
+			<tr>
+				<th>9</th>
+				<th>Linux核心常式(Kernal routines)</th>
+			</tr>
+			<tr>
+				<th>p</th>
+				<th>程式相關手冊</th>
+			</tr>
+		</table>
+
+	<!-- search -->
+		<div class="commands">
+			<span class="cmts"># 查詢手冊標題內容</span>
+			user:~ $ <span class="cmds">man</span> -f 
+			<span class="vars">{command}</span>
+			<br />user:~ $ <span class="cmds">whatis</span> 
+			<span class="vars">{command}</span>
+			<span class="cmts"># whatis 與-f同樣效果</span>
+			<br />user:~ $ <span class="cmds">man</span> -k
+			<span class="vars">{command}</span>
+			<span class="cmts"># 全文檢索</span>
+		</div>
+		<hr />
+
+
+<!-- Object2 -->
+	<a name="Object2"><h2>Objective 2: Use info Pages</h2></a>
+	<p class="h2">Info是Linux系統所提供，其文件檔案存放在/usr/share/info下，格式與man則略有不同，他主要是將一份文件分成多個節點，透過超連結的方式讓使用者可以類似瀏覽網頁的方式瀏覽文件內容。</p>
+	<div class="commands">
+		user:~ $ <span class="cmds">info</span>
+		<span class="vars">{command}</span>
+	</div>
+	
+	<!-- command -->
+		<h3>info操作指令</h3>
+		<table class="h3" border="1">
+			<tr>
+				<th>指令</th>
+				<th>說明</th>
+			</tr>
+			<tr>
+				<th>[Enter]</th>
+				<th>進入</th>
+			</tr>
+			<tr>
+				<th>[tab]</th>
+				<th>移至下一個超連結</th>
+			</tr>
+			<tr>
+				<th>[alt]+[tab]</th>
+				<th>移至上一個超連結</th>
+			</tr>
+			<tr>
+				<th>n</th>
+				<th>移至下一個節點</th>
+			</tr>
+			<tr>
+				<th>p</th>
+				<th>移至上一個結點</th>
+			</tr>
+			<tr>
+				<th>s、/</th>
+				<th>(search)搜尋關鍵字</th>
+			</tr>
+			<tr>
+				<th>q</th>
+				<th>quit</th>
+			</tr>
+		</table>
+		<hr />
+
+
+<!-- Object3 -->
+	<a name="Object3"><h2>Objective 3: Access release Notes and White Papers</h2></a>
+	<hr />
+
+
+<!-- Object4 -->
+	<a name="Object4"><h2>Objective 4: Use GUI-Based Help</h2></a>
+	<hr />
+
+
+<!-- Object5 -->
+	<a name="Object5"><h2>Objective 5: Find Help on the Web</h2></a>
+	<hr />
+
+
+<!-- Changelog -->
+	<a name="changelog"><h2>Changelog</h2></a>
+	<li class="title">2014/06/18 完成1、2part</li>
+	<hr />
+
+
+</body>
