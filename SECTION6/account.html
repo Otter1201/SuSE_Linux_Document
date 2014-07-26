@@ -1,0 +1,629 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<link rel="stylesheet" type="text/css" href="../defaults.css">
+	<title>帳號管理</title>
+</head>
+<body>
+<!-- header -->
+	<h1>帳號管理</h1>
+	<br /><a href="#account"><li class="title">帳號管理</li></a>
+	<br /><a href="#useradd"><li class="title">新增使用者</li></a>
+	<br /><a href="#modify"><li class="title">帳號修改與刪除</li></a>
+	<br /><a href="#passwd"><li class="title">密碼設定1</li></a>
+	<br /><a href="#chage"><li class="title">密碼設定2</li></a>
+	<br /><a href="#grpaccount"><li class="title">群組帳號設定</li></a>
+	<br /><a href="#changelog"><li class="title">Changelog</li></a>
+	<hr />
+
+<!-- account -->
+	<a name="account"><h2>帳號管理</h2></a>
+	<p class="h2">在SuSE linux下，使用者與群組帳號密碼等資訊被記錄在以下幾個檔案中:</p>
+	<h3>/etc/passwd</h3>
+		<div class="commands">
+		root:~ # <span class="cmds">cat</span>
+		/etc/passwd 
+		<span class="cmts"># 記錄所有帳號資料</span>
+		<br />root:x:0:0:root:/root:/bin/bash
+		<br />bin:x:1:1:bin:/bin:/bin/bash
+		<br /><span class="vars">{account}</span>:1025:1000:<span class="vars">{info}</span>:/home/account:/bin/bash
+		<br />...
+		</div>
+		<p class="h3">各個欄位說明如下:</p>
+		<table class="h3" border="1">
+			<tr>
+				<td>1</td>
+				<td><span class="vars">{account}</span></td>
+				<td>帳號名稱</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>x</td>
+				<td><span class="cmts"># password</span>
+				<br />此欄位資料已經被移至/etc/shadow中，所以僅顯示x</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>1025</td>
+				<td><span class="cmts"># UID</span>
+				<br />root UID=0 
+				<br />system daemon UID=1~999
+				<br />user UID=1000~</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>1000</td>
+				<td><span class="cmts"># GID</span>
+				<br />記錄在 /etc/group</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td><span class="vars">{info}</span></td>
+				<td>使用者資訊說明欄，或用finger來取得更詳細的資訊</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>/home/account</td>
+				<td>使用者的家目錄
+				<br />root的家目錄位於/root底下</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>/bin/bash</td>
+				<td>Shell</td>
+			</tr>
+		</table>
+
+	<h3>/etc/shadow</h3>
+		<div class="commands">
+			root:~ # <span class="cmds">cat</span>
+			/etc/shadow
+			<sapn class="cmts"># 記錄密碼資料</sapn>
+			<br /><span class="vars">{account}</span>:$*****:16001:0:99999:7::17075:
+		</div>
+		<p class="h3">各個欄位說明如下:</p>
+		<table class="h3" border="1">
+			<tr>
+				<td>1</td>
+				<td><span class="vars">{account}</span></td>
+				<td>帳號名稱</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>$*****</td>
+				<td><span class="cmts"># passwd</span>
+				<br />這個欄位內的資料才是真正的密碼，而且是經過編碼的密碼(加密)</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>16001</td>
+				<td>這個欄位記錄了『更動密碼那一天』的日期，自<em>1970/01/01</em>算起之天數，欲知道正確之日期可用後述chage -l指令</td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td>0</td>
+				<td>密碼不可被更動的天數</td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>99999</td>
+				<td>密碼需要重新變更的天數，99999表示密碼變更沒有強制性</td>
+			</tr>
+			<tr>
+				<td>6</td>
+				<td>7</td>
+				<td>密碼需要變更期限前的警告天數</td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td>(space)</td>
+				<td>密碼過期後的帳號寬限時間(密碼失效日):密碼有效日期為『更新日期(第3欄位)』+『重新變更日期(第5欄位)』，過了該期限後使用者依舊沒有更新密碼，那該密碼就算<em>過期</em>了。 雖然密碼過期但是該帳號還是可以用來進行其他工作的，包括登入系統取得 bash。不過如果密碼過期了，那當你登入系統時，系統會強制要求你必須要重新設定密碼才能登入繼續使用喔，這就是密碼過期特性。
+				<br />那這個欄位的功能是什麼呢？是在密碼過期幾天後，如果使用者還是沒有登入更改密碼，那麼這個帳號的密碼將會<em>『失效』</em>，亦即該帳號再也無法使用該密碼登入了。要注意密碼過期與密碼失效並不相同。</td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td>17075</td>
+				<td>帳號失效日期(到期日)，一樣是以1970/01/01為第一天算起</td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td>(space)</td>
+				<td>最後一個欄位是保留的，看以後有沒有新功能加入。</td>
+			</tr>
+		</table>
+
+	<h3>/etc/group</h3>
+		<div class="commands">
+			root:~ # <span class="cmds">cat</span>
+			/etc/group <span class="cmts"># 查看群組資訊</span>
+			<br />bin:x:1:daemon
+			<br />daemon:x:2:
+			<br /><span class="vars">group</span>:!:1000:<span class="vars">{account}</span>
+		</div>
+		<p class="h3">各個欄位說明如下:</p>
+		<table class="h3" border="" ="1">
+			<tr>
+				<td>1</td>
+				<td><span class="vars">group</span></td>
+				<td>群組名稱</td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>x</td>
+				<td>群組密碼，通常不需要設定，此欄位資料已經被移至/etc/gshadow中，所以僅顯示x</td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>1000</td>
+				<td><sapn class="cmts"># GID</sapn></td>
+			</tr>
+			<tr>
+				<td>4</td>
+				<td><span class="vars">{account}</span></td>
+				<td>加入此群組的帳號</td>
+			</tr>
+		</table>
+
+	<center><img src="http://linux.vbird.org/linux_basic/0410accountmanager//id_link.gif"></center>
+	<hr />
+
+<!-- useradd -->
+	<a name="useradd"><h2>新增使用者 (useradd)</h2></a>
+	<div class="commands">
+		root:~ # <span class="cmds">useradd</span>
+		<span class="vars">{account}</span>
+		<span class="cmts"># 新增一個名為{account}的使用者</span>
+		<br />root:~ # <span class="cmds">passwd</span>
+		<span class="vars">{account}</span>
+		<span class="cnts"># 設定account登入密碼</span>
+		<br />Changing password for user1.
+		<br />New Password : 
+		<br />Reenter New Password : 
+		<br />Password changed.
+		<span class="cmts"># 密碼設定無誤</span>
+		<br />root:~ # <span class="cmds">finger</span>
+		<span class="vars">{account}</span>
+		<span class="cmts"># 查詢該帳號使用者資訊</span>
+		<br />root:~ # <span class="cmds">su</span> - <span class="vars">{account}</span>
+		<span class="cmts"># 以account身分登入</span>
+		<br />su: warning: cannot change directory to /home/account: No such file or directory
+		<span class="cmts"># useradd並沒有為account建立家目錄</span>
+		<br />account@linux: /root>
+		<span class="cmts"># 故登入時進入/root目錄下</span>
+	</div>
+	<h3>arguments</h3>
+	<table class="h3" border=1>
+		<tr>
+			<td>argument</td>
+			<td>description</td>
+			<td>example</td>
+		</tr>
+		<tr>
+			<td>-m, --creat-home</td>
+			<td><span class="cmts"># Create home directory</span>
+			<br />建立帳號同時建立家目錄</td>
+			<td><span class="cmds">useradd</span>
+			-m <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-e, --expire YYYY-MM-DD</td>
+			<td><span class="cmts"># Expire date</span>
+			<br />設定帳號到期日:年-月-日</td>
+			<td><span class="cmds">useradd</span>
+			-e 2007-12-01 <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-s, --shell SHELL</td>
+			<td><span class="cmts"># Login shell: /bin/sh, /bin/csh, /bin/tcsh, /bin/zch, /bin/false</span>
+			<br />設定登入的shell, false表示該使用者不可登入</td>
+			<td><span class="cmds">useradd</span>
+			-s /bin/sh <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-u, --uid UID</td>
+			<td><span class="cmts"># User id</span>
+			<br />使用者的UID, root UID=0, 0~1000為系統服務，在1000以後為一般使用者</td>
+			<td><span class="cmds">useradd</span>
+			-u 1007 <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-g, --gid GID</td>
+			<td><span class="cmts"># Main group</span>
+			<br />設定使用者的主要群組，可為數字或是群組名稱</td>
+			<td><span class="cmds">useradd</span>
+			-g <span class="vars">{group}</span> 
+			<span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-G, --groups group</td>
+			<td><span class="cmts"># Subgroup</span>
+			<br />設定使用者的次要群組，當有多個次要群組需加入時，可用","分隔</td>
+			<td><span class="cmds">useradd</span>
+			-G <span class="vars">{group1}</span>,<span class="vars">{group2}</span> 
+			<span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-d, --home HOMEDIR</td>
+			<td><span class="cmts"># Home directory</span>
+			<br />設定使用者的家目錄</td>
+			<td><span class="cmds">useradd</span>
+			-h /home/account <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-k, --skel SKELDIR</td>
+			<td><span class="cmts"># Skel directory</span>
+			<br />建立使用者家目錄後，要從哪個目錄底下複製預設設定檔</td>
+			<td><span class="cmds">useradd</span>
+			-k /etc/skel <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-c, --comment COMMENT</td>
+			<td><span class="cmts"># User finger information (Name:)</span>
+			<br />設定使用者的名稱，可用finger指令查詢</td>
+			<td><span class="cmds">useradd</span>
+			-c <span class="vars">{name}</span>
+			<span class="vars">{account}</span></td>
+		</tr>
+	</table>
+	<p class="h3">在新增使用者時，系統會有預設的設定檔來設定一些參數，在/etc/default/useradd</p>
+	<div class="commands">
+		root:~ # <span class="cmds">cat</span>
+		/etc/default/useradd
+		<br />GROUP=100
+		<span class="cmts"># 設定帳號的主要群組</span>
+		<br />HOME=/home
+		<span class="cmts"># 設定帳號的家目錄</span>
+		<br />INACTIVE=-1
+		<span class="cmts"># 設定帳號密碼到期後，幾天後會被鎖（即是不可以登入系統)</span>
+		<br />EXPIRE=
+		<span class="cmts"># 設定帳號的到期日</span>
+		<br />SHELL=/bin/bash
+		<span class="cmts"># 設定帳號的登入 SHELL</span>
+		<br />SKEL=/etc/skel
+		<span class="cmts"># 設定帳號的 SKELDIR</span>
+		<br />GROUPS=dialout,uucp,video,audio
+		<span class="cmts"># 設定帳號的次要群組</span>
+		<br />CREATE_MAIL_SPOOL=no
+		<span class="cmts">#不建立使用者的mailbox</span>
+	</div>
+	<hr />
+
+<!-- modify -->
+	<a name="usermod"><h2>帳號修改 (usermod)與刪除 (userdel)</h2></a>
+	<p class="h2">帳號建立後，如果需要修改其設定可用usermod指令，參數和上述用法均相同</p>
+	<div class="commands">
+		root:~ # <span class="cmds">usermod</span>
+		-[e,s,u,g,G,d] <span class="vars">{account}</span>
+	</div>
+	<p class="h2">移除帳號時，使用usrdel指令</p>
+	<div class="commands">
+		root:~ # <span class="cmds">userdel</span>
+		<span class="vars">{account}</span>
+		<span class="cnts"># 刪除該帳號，但不會刪除其家目錄</span>
+	</div>
+	<h3>arguments</h3>
+	<table class="h3" border=1>
+		<tr>
+			<td>argument</td>
+			<td>description</td>
+			<td>example</td>
+		</tr>
+		<tr>
+			<td>-r, --rmove-home</td>
+			<td><span class="cmts"># Remove home directory & mail spool</span>
+			<br />在移除帳號同時也一起移除使用者家目錄和 mail</td>
+			<td><span class="cmds">userdel</span>
+			-r <span class="vars">{account}</span></td>
+		</tr>
+	</table>
+	<hr />
+
+<!-- passwd -->
+	<a name="passwd"><h2>密碼設定 (passwd)</h2></a>
+	<p class="h2">在使用者密碼的部分，使用 passwd這支指令</p>
+	<div class="commands">
+		root:~ # <span class="cmds">passwd</span>
+		<span class="vars">{account}</span>
+		<span class="cmts"># Change password for user</span>
+		<br /><span class="cmts"># root可以變更所有user和自己的密碼，但user使用這支指令只能變更自己的密碼</span>
+		<br />root:~ # <span class="cmds">passwd</span>
+		-S <span class="vars">{account}</span>
+		<span class="cmts"># 查看密碼狀態</span>
+		<br /><span class="vars">{account}</span> PS MM/DD/YYYY 0 99999 7 -1
+	</div>
+	<p class="h2">各個欄位說明如下:</p>
+	<table class="h3" border=1>
+		<tr>
+			<td>column</td>
+			<td>description</td>
+		</tr>
+		<tr>
+			<td><span class="vars">{account}</span></td>
+			<td>帳號</td>
+		</tr>
+		<tr>
+			<td>PS/LK/NP</td>
+			<td>表示密碼狀態
+			<br />PS 為有密碼
+			<br />LK 為鎖住密碼
+			<br />NP 為無密碼</td>
+		</tr>
+		<tr>
+			<td>MM/DD/YYYY</td>
+			<td>表示密碼最後修改日期</td>
+		</tr>
+		<tr>
+			<td>0</td>
+			<td>使用者至少隔幾天才能改密碼</td>
+		</tr>
+		<tr>
+			<td>99999</td>
+			<td>使用者密碼還有幾天會無效</td>
+		</tr>
+		<tr>
+			<td>7</td>
+			<td>警告密碼到期的期限，預設是 7 天，表示密碼到期的前 7 天，只要使用者登入系統，系統都會警告</td>
+		</tr>
+		<tr>
+			<td>-1</td>
+			<td>預設是 "-1" ，功能如下面 -i參數所述</td>
+		</tr>
+	</table>
+	<h3>arguments</h3>
+	<table class="h3" border=1>
+		<tr>
+			<td>argument</td>
+			<td>description</td>
+			<td>example</td>
+		</tr>
+		<tr>
+			<td>-n MIN</td>
+			<td><span class="cmts"># minimum number of days between password changes</span>
+			<br />使用者至少幾天隔幾天才能改密碼</td>
+			<td><span class="cmds">passwd</span>
+			-n 14 <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-x MAX</td>
+			<td><span class="cmts"># maximum number of days during which a password is valid</span>
+			<br />使用者密碼還有幾天會無效</td>
+			<td><span class="cmds">passwd</span>
+			-x 30 <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-w WARN</td>
+			<td><span class="cmts"># number of days of warning before a password change</span>
+			<br />設定當密碼有效期限幾天內，系統會警告使用者密碼無效</td>
+			<td><span class="cmds">passwd</span>
+			-w 7 <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-i INACT</td>
+			<td><span class="cmts"># number of days of inactivity after a password has expired before the account is locked</span>
+			<br />在使用者密碼到期後， 
+			<br />"-1":當使用者下次登入將被強迫更改密碼
+			<br />"0":取消這功能，即是沒有什麼事情發生</td>
+			<td><span class="cmds">passwd</span>
+			-i -1 <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-l</td>
+			<td><span class="cmts"># lock password, let user cannot login</span>
+			<br />鎖住使用者密碼，讓使用者無法登入</td>
+			<td><span class="cmds">passwd</span>
+			-l <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-u</td>
+			<td><span class="cmts"># unlock passord, user can login</span>
+			<br />解開使用者密碼，讓使用者可以登入</td>
+			<td><span class="cmds">passwd</span>
+			-u <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-S</td>
+			<td><span class="cmts"># password status</span>
+			<br />查看使用者密碼狀態</td>
+			<td><span class="cmds">passwd</span>
+			-S <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-a</td>
+			<td><span class="cmts"># all accounts</span>
+			<br />查看所有使用者密碼狀態，與-S 一起使用</td>
+			<td><span class="cmds">passwd</span>
+			-Sa <span class="vars">{account}</span></td>
+		</tr>
+		<tr>
+			<td>-e</td>
+			<td><span class="cmts"># forced to change the password at next login</span>
+			<br />強迫使用者下次登入時改密碼</td>
+			<td><span class="cmds">passwd</span>
+			-e <span class="vars">{account}</span></td>
+		</tr>
+	</table>
+	<hr />
+
+<!-- chage -->
+	<a name="chage"><h2>密碼設定 (chage)</h2></a>
+	<p class="h3">另一個有類似功能的指令就是 chage ，如查看使用者密碼狀態</p>
+	<div class="commands">
+		root:~ # <span class="cmds">chage</span>-l
+		<span class="vars">{account}</span>
+		<span class="cmts"># 查詢使用者的密碼狀態</span>
+		<br />Password: 
+		<span class="cmts"># user須輸入密碼root則不用</span>
+		<br />Minimum:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0
+		<span class="cmts"># 使用者至少隔幾天才能改密碼</span>
+		<br />Maximum:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;99999
+		<span class="cmts"># 使用者密碼還有幾天會無效</span>
+		<br />Warning:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7
+		<span class="cmts"># 警告使用者密碼到期的期限</span>
+		<br />Inactive:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-1
+		<span class="cmts"># 在使用者密碼到期後，所執行的動作</span>
+		<br />Last Change:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jan 28, 2006
+		<span class="cmts"># 使用者最後改密碼的日期</span>
+		<br />Password Expires:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Never
+		<span class="cmts"># 使用者密碼到期日</span>
+		<br />Password Inactive:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Never
+		<span class="cmts">#</span>
+		<br />Account Expires:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Never
+		<span class="cmts"># 使用者帳號到期日</span>
+	</div>
+	<h3>argument</h3>
+	<table class="h3" border="1">
+		<tr>
+			<td>argument</td>
+			<td>description</td>
+			<td>example</td>
+		</tr>
+		<tr>
+			<td>-m, --mindays MIN</td>
+			<td><span class="cmts"># minimum number of days between password changes</span>
+			<br />使用者至少幾天隔幾天才能改密碼</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>-M, --maxdays MAX</td>
+			<td><span class="cmts"># maximum number of days during which a password is valid </span>
+			<br />使用者密碼還有幾天會無效</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>-W, --warndays WARN</td>
+			<td><span class="cmts"># number of days of warning before a password change </span>
+			<br />設定當密碼有效期限幾天內，系統會警告使用者密碼無效</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>-I, --inactive INACT</td>
+			<td><span class="cmts"># number of days of inactivity after a password has expired before the account is locked</span>
+			<br />在使用者密碼到期後
+			<br />"-1":當使用者下次登入將被強迫更改密碼
+			<br />"0":取消這功能，即是沒有什麼事情發生</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>-l, --list</td>
+			<td><span class="cmts"># list the password expiry information</span>
+			<br />查看使用者密碼狀態</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>-d, --lastday YYYY-MM-DD</td>
+			<td><span class="cmts">#  password was last changed can be set to another value</span>
+			<br />設定使用者最後修改密碼的時間，以 " 年-月-日" 的形式輸入</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>-E, --expiredate YYYY-MM-DD</td>
+			<td><span class="cmts"># account will be expired can be changed</span>
+			<br />設定使用者帳號到期的時間，以 " 年-月-日 " 的形式輸入  </td>
+			<td></td>
+		</tr>
+	</table>
+	<hr />
+
+<!-- group account -->
+	<a name="grpaccount"><h2>群組帳號設定</h2></a>
+	<h3>groupadd</h3>
+		<p class="h3">要增加群組帳號，常使用groupadd這支指令</p>
+		<div class="commands">
+			root:~ # <span class="cmds">groupadd</span>
+			<span class="vars">{group1}</span>
+			<span class="cmts"># 增加一個名group1的群組</span>
+		</div>
+		<h4>arguments</h4>
+		<table class="h3" border=1>
+			<tr>
+				<td>argument</td>
+				<td>description</td>
+				<td>example</td>
+			</tr>
+			<tr>
+				<td>-g, --gid GID</td>
+				<td><span class="cmts"># Force the new group ID to be the given number</span>
+				<br />新增群組時並指派 GID</td>
+				<td><span class="cmds">groupadd</span>
+				-g 103 <span class="vars">{group1}</span></td>
+			</tr>
+		</table>
+
+	<h3>groupmod</h3>
+		<p class="h3">要修改群組關係，就要使用groupmod這指令，像是將某個使用者增加到某個群組，或移除等等的關係</p>
+		<div class="commands">
+			root:~ # <span class="cmds">groupmod</span> -A
+			<span class="vars">{account}</span>
+			<span class="vars">{group}</span>
+			<span class="cmts"># 將使用者account加入到群組 group1</span>
+		</div>
+		<h4>arguments</h4>
+		<table class="h3" border=1>
+			<tr>
+				<td>argument</td>
+				<td>description</td>
+				<td>example</td>
+			</tr>
+			<tr>
+				<td>-g, --gid GID</td>
+				<td><span class="cmts"># Force the new group ID to be the given number</span>
+					<br />修改群組的GID</td>
+					<td><span class="cmds">groupmod</span>
+					-g 104 <span class="vars">{group1}</span></td>
+			</tr>
+			<tr>
+				<td>-A, --add-user USER</td>
+				<td><span class="cmts"># Add the user account to the specified group</span>
+				<br />將使用者加入到某群組，若要同時增加多人可以用 "," 分隔</td>
+				<td><span class="cmds">groupmod</span>
+					-A <span class="vars">{account}</span>
+					<span class="vars">{group1}</span></td>
+			</tr>
+			<tr>
+				<td>-R, --remove-user USER</td>
+				<td><span class="cmts"># Remove the user account from the specified group</span>
+				<br />將使用者移從某群組除，若要同時移除多人可以用 "," 分隔</td>
+				<td><span class="cmds">groupadd</span> -R
+					<span class="vars">{account1}</span>,
+					<span class="vars">{account2}</span>
+					<span class="vars">{group1}</span></td>
+			</tr>
+		</table>
+
+	<h3>groupdel</h3>
+		<p class="h3">要移除群組帳號，常使用 groupdel 這指令，比較少在使用其參數，但是有一點要注意的，就是要移除的群組帳號為某使用者的 primary group （主要群組）時，此群組無法移除，除非此群組帳號之下沒有使用者才行</p>
+		<div class="commands">
+			root:~ # <span class="cmds">groupdel</span>
+			<span class="vars">{group1}</span>
+			<sapn class="cmts"># 移除一個名 group1 的群組</sapn>
+		</div>
+
+	<h3>gpasswd</h3>
+	 <p class="h3">設定群組的密碼，用gpasswd(少用)</p>
+	 <div class="commands">
+	 	root:~ # <span class="cmds">gpasswd</span>	
+	 	<span class="vars">{group1}</span>
+	 	<span class="cmts"># 設定群組 group1 的密碼</span>
+	 </div>
+	 <h4>argument</h4>
+	 <table class="h3" border=1>
+			<tr>
+				<td>argument</td>
+				<td>description</td>
+				<td>example</td>
+			</tr>
+			<tr>
+				<td>-r</td>
+				<td><span class="cmts"># Remove group password</span></td>
+				<td><span class="cmds">gpasswd</span>
+				-r <span class="vars">{group1}</span></td>
+			</tr>
+		</table>
+	<hr />
+
+<!-- changelog -->
+	<a name="changelog"><h2>Changelog</h2></a>
+	<li class="changelog">2014/07/26 第一次完成</li>
+
+</body>
+</html>
